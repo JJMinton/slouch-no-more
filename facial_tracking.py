@@ -16,8 +16,8 @@ def analyze_image(image_data):
     try:
         # Execute the REST API call and get the response.
         response = requests.request('POST', keys.url_face, files={}, data=image_data, headers=headers, params=params)
-        parsed = json.loads(response.text)
-        return parsed
+        headPose = response.json()[0]['faceAttributes']['headPose']
+        return headPose
 
     except Exception as e:
         print('Error:')
@@ -25,8 +25,10 @@ def analyze_image(image_data):
     
 
 def process_result(result):
-    print ('Response:')
-    print (json.dumps(result, sort_keys=True, indent=2))
+    pitch = headPose['pitch']
+    roll = headPose['roll']
+    yaw = headPose['yaw']
+    print('pitch =', pitch, 'roll =', roll, 'yaw =', yaw);
 
 if __name__ == "__main__":
 
