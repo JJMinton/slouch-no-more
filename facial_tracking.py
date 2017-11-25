@@ -10,10 +10,6 @@ from webcam import get_image
 def should_analyze(image):
     return True
 
-#def get_image():
-#    with open('images/test1.jpg', 'rb') as f:
-#        data = f.read()
-#    return data
 
 def analyze_image(image_data):
     try:
