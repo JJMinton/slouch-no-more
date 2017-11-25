@@ -1,8 +1,4 @@
 #!/bin/python3.6
-import requests, json
-
-import keys
-
 
 from webcam import get_image
 #from test_images import get_image
