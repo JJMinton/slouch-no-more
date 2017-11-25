@@ -15,7 +15,7 @@ def get_image():
 def analyze_image(image_data):
     try:
         # Execute the REST API call and get the response.
-        response = requests.request('POST', uri_base, files={}, data=image_data, headers=headers, params=params)
+        response = requests.request('POST', keys.url_face, files={}, data=image_data, headers=headers, params=params)
         headPose = response.json()[0]['faceAttributes']['headPose']
         return headPose
 
