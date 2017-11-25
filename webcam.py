@@ -25,14 +25,17 @@ def get_image():
 
     vc.release()
 
-    cv2.imwrite("test.png", frame)
+    cv2.imwrite("images/temp_img.png", frame)
 
-    return frame #TODO: change to byte stream
+    with open('images/temp_img.png', 'rb') as f:
+        data = f.read()
+
+    return data
 
 
 
 if __name__ == "__main__":
 
-    frame = get_frame()
-    print(type(frame))
-    cv2.imwrite("test.png", frame)
+    frame = get_image()
+    #print(frame.tobytes())
+    #cv2.imwrite("test.png", frame)
