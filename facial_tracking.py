@@ -28,19 +28,25 @@ def process_result(result):
     faceLandmarks = result.json()[0]['faceLandmarks']
     
     #TODO: calibration
-    epsilon_pitch = 2;
-    epsilon_roll = 2;
-    epsilon_yaw = 2;
+    epsilon_pitch = 2
+    epsilon_roll = 2
+    epsilon_yaw = 2
+    
+    pitch = headPose['pitch']
+    roll = headPose['roll']
+    yaw = headPose['yaw']
     
     #Just for fun
-    if(abs(headPose['pitch']) > epsilon_pitch):
-        print('Only look at me baby!')
+    if(abs(pitch) > epsilon_pitch):
+        print('Pitch! Only look at me baby!', pitch)
     
-    if(abs(headPose['roll']) > epsilon_roll):
-        print('Cmon, stop rolling your head!')
+    if(abs(roll) > epsilon_roll):
+        print('Roll! Cmon, stop rolling your head!', roll)
     
-    if(abs(headPose['yaw']) > epsilon_yaw):
-        print('Look at me T.T')
+    if(abs(yaw) > epsilon_yaw):
+        print('Yaw! Look at me!', yaw)
+        
+    print(faceLandmarks);
 
 if __name__ == "__main__":
 
