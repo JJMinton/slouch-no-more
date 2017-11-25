@@ -16,20 +16,6 @@ def should_analyse(image):
 
 if __name__ == "__main__":
 
-    # Request headers.
-    headers = {
-        'Content-Type': 'application/octet-stream',
-        'Ocp-Apim-Subscription-Key': keys.key_face,
-    }
-
-    # Request parameters.
-    params = {
-        'returnFaceId': 'false',
-        'returnFaceLandmarks': 'true',
-        'returnFaceAttributes': 'headPose,emotion',
-        #'returnFaceAttributes': 'age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise',
-    }
-
     i=0
     while i < 4:
         i += 1
