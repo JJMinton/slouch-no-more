@@ -4,14 +4,17 @@ import requests, json
 import keys
 
 
+from webcam import get_image
+
+
 def should_analyze(image):
     return True
 
-def get_image():
-    with open('images/test1.jpg', 'rb') as f:
-        data = f.read()
-    return data
-    
+#def get_image():
+#    with open('images/test1.jpg', 'rb') as f:
+#        data = f.read()
+#    return data
+
 def analyze_image(image_data):
     try:
         # Execute the REST API call and get the response.
@@ -22,7 +25,7 @@ def analyze_image(image_data):
     except Exception as e:
         print('Error:')
         print(e)
-    
+
 
 def process_result(result):
     print ('Response:')
@@ -43,7 +46,7 @@ if __name__ == "__main__":
         'returnFaceAttributes': 'headPose,emotion',
         #'returnFaceAttributes': 'age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise',
     }
-    
+
     i=0
     while i < 4:
         i += 1
@@ -51,4 +54,3 @@ if __name__ == "__main__":
         if should_analyze(image):
             result = analyze_image(image)
             process_result(result)
-

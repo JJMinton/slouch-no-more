@@ -1,2 +1,2 @@
-url_face = 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect'
-key_face = 'your own api key here'
+url_face = 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect' # Leave as is
+key_face = 'your-own-api-key-here'
