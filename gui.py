@@ -8,8 +8,8 @@ import tkinter as tk
 from PIL import Image, ImageTk
 
 #### Image processing
-#from webcam import get_image
-from test_images import get_image
+from webcam_pygame import get_image
+#from test_images import get_image
 from api_call import make_api_call
 from analyse_posture import analyse_posture
 
@@ -28,8 +28,9 @@ class Application(tk.Frame):
 
 
     def updateImage(self):
-        image_binary = get_image()
-        results = make_api_call(image_binary)
+        image_path = get_image()
+        print(image_path)
+        results = make_api_call(image_path)
 
         if analyse_posture(results):
             print('good posture')
@@ -39,7 +40,7 @@ class Application(tk.Frame):
             self.config(bg='red')
 
 
-        img = Image.open(io.BytesIO(image_binary))
+        img = Image.open(image_path)
         self.drawImage(img)
         self.after(1000, self.updateImage)
 

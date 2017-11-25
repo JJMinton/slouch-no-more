@@ -1,6 +1,7 @@
 #!/bin/python3.6
 
-from webcam import get_image
+from webcam_pygame import get_image
+#from webcam import get_image
 #from test_images import get_image
 from api_call import make_api_call
 from analyse_posture import analyse_posture

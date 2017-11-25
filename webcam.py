@@ -1,8 +1,6 @@
 import cv2
 from time import sleep
 
-#from facial_tracking import
-
 
 def get_image():
 
@@ -27,10 +25,8 @@ def get_image():
 
     cv2.imwrite("images/temp_img.png", frame)
 
-    with open('images/temp_img.png', 'rb') as f:
-        data = f.read()
 
-    return data
+    return "images/temp_img.png"
 
 
 
