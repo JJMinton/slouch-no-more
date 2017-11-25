@@ -28,6 +28,7 @@ def process_result(result):
     pitch = headPose['pitch']
     roll = headPose['roll']
     yaw = headPose['yaw']
+    print('pitch =', pitch, 'roll =', roll, 'yaw =', yaw);
 
 if __name__ == "__main__":
 
