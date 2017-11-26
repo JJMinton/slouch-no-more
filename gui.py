@@ -1,6 +1,8 @@
 #!/bin/python3.6
 
 import io
+import winsound
+import pygame
 
 ### Tkinter stuff
 from itertools import cycle
@@ -44,13 +46,21 @@ class Application(tk.Frame):
         print(image_path)
         results = make_api_call(image_path)
 
+        pygame.init()
+        pygame.mixer.init()
+        sounda = pygame.mixer.Sound('resources/sound.wav')
+
 
 
         posture = self.posture.analyse_posture(results) 
         if  posture == 'resources/neutral.png':
             self.can.config(bg="grey")
+
         else:
             self.can.config(bg="red")
+            sounda.stop()
+            sounda.play()
+            print('I tried')
         img = Image.open(posture)
         self.warning_pic = ImageTk.PhotoImage(img)
         self.warning.config(image=self.warning_pic)
@@ -81,7 +91,8 @@ class Application(tk.Frame):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    root.geometry("500x500")
+    root.geometry("650x600")
+    root.title('Slouch No More!')
 
     image_numbers = cycle(range(10))
 
