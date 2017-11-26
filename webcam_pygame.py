@@ -2,7 +2,8 @@ from pygame import camera, image
 from time import sleep
 
 camera.init()
-cam = camera.Camera("/dev/video0", (640, 480));
+cameras = camera.list_cameras();
+cam = camera.Camera(cameras[0], (640, 480));
 cam.start()
 
 
