@@ -11,12 +11,13 @@ from PIL import Image, ImageTk
 from webcam_pygame import get_image
 #from test_images import get_image
 from api_call import make_api_call
-from analyse_posture import analyse_posture
+from analyse_posture import PostureAnalyser
 
 
 class Application(tk.Frame):
     def __init__(self, master, width, height):
         tk.Frame.__init__(self, master)
+        self.posture = PostureAnalyser()
         self.width, self.height = width, height
         self.grid()
         self.createWidgets()
@@ -24,7 +25,14 @@ class Application(tk.Frame):
         
     def createWidgets(self):
         self.can = tk.Canvas(root, width=self.width, height=self.height)
-        self.can.grid()
+        self.can.grid(row=0)
+        self.ypr = tk.StringVar()
+        self.ypr_label = tk.Label(root, textvariable = self.ypr)
+        self.ypr_label.grid(row=1)
+
+        self.xy = tk.StringVar()
+        self.xy_label = tk.Label(root, textvariable = self.xy)
+        self.xy_label.grid(row=1, column=1)
 
 
     def updateImage(self):
@@ -32,17 +40,25 @@ class Application(tk.Frame):
         print(image_path)
         results = make_api_call(image_path)
 
-        if analyse_posture(results):
+
+
+        if self.posture.analyse_posture(results):
             print('good posture')
-            self.config(bg='grey')
+            self.can.config(bg="grey")
         else:
             print('bad posture')
-            self.config(bg='red')
+            self.can.config(bg="red")
 
+        if results:
+            self.ypr.set('Yaw: {yaw}, Pitch: {pitch}, Roll: {roll}'.format(**results[0]['faceAttributes']["headPose"]))
+            self.xy.set('Nose tip (x,y): ({x}, {y})'.format(**results[0]["faceLandmarks"]["noseTip"]))
+        else:
+            self.ypr.set('Yaw: -, Pitch: -, Roll: -')
+            self.xy.set('Nose tip (x,y): (-, -)')
 
         img = Image.open(image_path)
         self.drawImage(img)
-        self.after(1000, self.updateImage)
+        self.after(1, self.updateImage)
 
     def drawImage(self, image):
         ### Resize image to fit in box
@@ -61,6 +77,6 @@ if __name__ == "__main__":
 
     image_numbers = cycle(range(10))
 
-    app = Application(root, 500, 500)
+    app = Application(root, 300, 300)
 
     root.mainloop()
