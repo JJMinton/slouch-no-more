@@ -1,5 +1,8 @@
 #!/bin/python3.6
-import requests, json
+import json
+#import requests
+#import grequests as requests
+import aiohttp
 import keys
 
 # Request headers.
@@ -21,7 +24,7 @@ def make_api_call(image_path):
         image_data = f.read()
     try:
         # Execute the REST API call and get the response.
-        response = requests.request('POST', keys.url_face, files={}, data=image_data, headers=headers, params=params)
+        #response = requests.request('POST', keys.url_face, files={}, data=image_data, headers=headers, params=params)
         parsed = json.loads(response.text)
         return parsed
 

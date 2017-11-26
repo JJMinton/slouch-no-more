@@ -109,18 +109,26 @@ class ThreadedClient:
             import sys
             sys.exit(1)
         self.gui.updateImage()
-        self.master.after(config.delay, self.periodicCall)
+        self.master.after(config.delay*1000, self.periodicCall)
 
-    def process_images(self):
-        while not self.stop:
+    def process_images(self): #TODO: make asyncronous to increase pushing to queue
+
+        async def make_call():
             image_path = get_image()
-            results = make_api_call(image_path)
-            print(image_path)
+            yield from make_api_call(image_path)
+            
+        def callback(image_path, results):
             self.gui.queue.put((image_path, results))
             print(self.gui.queue.qsize())
-            #time.sleep(config.delay/1000)
 
-
+        async def async_main(loop):
+            while not self.stop:
+                asyncio.ensure_future(make_call())
+                make call on future
+                await asyncio.sleep(config.delay)
+                
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(async_main(loop))
 
 if __name__ == "__main__":
     root = tk.Tk()
