@@ -1,7 +1,6 @@
 #!/bin/python3.6
 
 import io
-import winsound
 import pygame
 
 ### Tkinter stuff
