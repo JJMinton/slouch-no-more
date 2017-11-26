@@ -45,9 +45,12 @@ class Application(tk.Frame):
         print(image_path)
         results = make_api_call(image_path)
 
-        pygame.init()
-        pygame.mixer.init()
-        sounda = pygame.mixer.Sound('resources/sound.wav')
+        try:
+            pygame.init()
+            pygame.mixer.init()
+            sounda = pygame.mixer.Sound('resources/sound.wav')
+        except pygame.error:
+            sounda = None
 
 
 
@@ -57,8 +60,9 @@ class Application(tk.Frame):
 
         else:
             self.can.config(bg="red")
-            sounda.stop()
-            sounda.play()
+            if sounda is not None:
+                sounda.stop()
+                sounda.play()
             print('I tried')
         img = Image.open(posture)
         self.warning_pic = ImageTk.PhotoImage(img)
