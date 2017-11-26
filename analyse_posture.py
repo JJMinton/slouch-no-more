@@ -26,7 +26,6 @@ class PostureAnalyser():
 
             self.x = result[0]["faceLandmarks"]["noseTip"]["x"]
             self.y = result[0]["faceLandmarks"]["noseTip"]["y"]
-        return True
 
     def analyse_posture(self, result):
         if result:
@@ -42,23 +41,25 @@ class PostureAnalyser():
                 raise
 
             if self.x is None:
-                return self.configure(result)
-                
-            #horizontal movement is fine
-            #if abs(x-self.x) > self.delta_x:
-            #    return False
-            if y > self.y + self.delta_y: #y is from top of frame
-                return False
-            if abs(yaw-self.yaw) > self.delta_yaw:
-                return False
-            if abs(pitch-self.pitch) > self.delta_pitch:
-                return False
-            if abs(roll-self.roll) > self.delta_roll:
-                return False
+                self.configure(result)
+            else:
+                #horizontal movement is fine
+                #if abs(x-self.x) > self.delta_x:
+                #    return False
+                if y > self.y + self.delta_y: #y is from top of frame
+                    return 'resources/down.png'
+                if roll > self.roll + self.delta_roll:
+                    return 'resources/tilt_left.png'
+                if roll < self.roll - self.delta_roll:
+                    return 'resources/tilt_right.png'
+                if yaw > self.yaw + self.delta_yaw:
+                    return 'resources/twist_left.png'
+                if yaw < self.yaw - self.delta_yaw:
+                    return 'resources/twist_right.png'
+                if (pitch-self.pitch) > self.delta_pitch: #Pitch is always zero
+                    return False
 
-            return True
-                
         else:
             print ('Response:')
             print (json.dumps(result, sort_keys=True, indent=2))
-            return True
+        return 'resources/neutral.png'

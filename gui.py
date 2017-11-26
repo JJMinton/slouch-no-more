@@ -26,6 +26,10 @@ class Application(tk.Frame):
     def createWidgets(self):
         self.can = tk.Canvas(root, width=self.width, height=self.height)
         self.can.grid(row=0)
+
+        self.warning = tk.Label()
+        self.warning.grid(row=0,column=1)
+
         self.ypr = tk.StringVar()
         self.ypr_label = tk.Label(root, textvariable = self.ypr)
         self.ypr_label.grid(row=1)
@@ -42,12 +46,14 @@ class Application(tk.Frame):
 
 
 
-        if self.posture.analyse_posture(results):
-            print('good posture')
+        posture = self.posture.analyse_posture(results) 
+        if  posture == 'resources/neutral.png':
             self.can.config(bg="grey")
         else:
-            print('bad posture')
             self.can.config(bg="red")
+        img = Image.open(posture)
+        self.warning_pic = ImageTk.PhotoImage(img)
+        self.warning.config(image=self.warning_pic)
 
         if results:
             self.ypr.set('Yaw: {yaw}, Pitch: {pitch}, Roll: {roll}'.format(**results[0]['faceAttributes']["headPose"]))
@@ -65,11 +71,13 @@ class Application(tk.Frame):
         x,y, width, height = image.getbbox()
         factor = min(self.width / (width-x), self.height / (height-y))
         width, height = int((width-x)*factor), int((height-y)*factor)
-        img = image.resize((width, height))
+        img = image.resize((width, height)).transpose(Image.FLIP_LEFT_RIGHT)
 
         #Draw image
         self.pic = ImageTk.PhotoImage(img)
         self.item = self.can.create_image(width/2,height/2, image=self.pic) 
+
+
 
 if __name__ == "__main__":
     root = tk.Tk()
