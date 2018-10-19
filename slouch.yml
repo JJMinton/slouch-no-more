@@ -1,0 +1,21 @@
+name: slouch
+dependencies:
+- python
+- pip
+- pip:
+  - certifi
+  - chardet
+  - cycler
+  - idna
+  - matplotlib
+  - numpy
+  - opencv-python
+  - Pillow
+  - pyparsing
+  - python-dateutil
+  - pytz
+  - requests
+  - SimpleCV
+  - six
+  - urllib3
+  - pygame
