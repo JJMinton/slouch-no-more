@@ -2,6 +2,8 @@
 import requests, json
 import keys
 
+from analyse_posture import Posture
+
 # Request headers.
 headers = {
     'Content-Type': 'application/octet-stream',
@@ -16,15 +18,29 @@ params = {
     #'returnFaceAttributes': 'age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise',
 }
     
-def make_api_call(image_path):
+def get_posture(image_path):
     with open(image_path, 'rb') as f:
         image_data = f.read()
     try:
         # Execute the REST API call and get the response.
         response = requests.request('POST', keys.url_face, files={}, data=image_data, headers=headers, params=params)
-        parsed = json.loads(response.text)
-        return parsed
-
+        result = json.loads(response.text)
+        if result:
+            try: 
+                posture = Posture(
+                    result[0]["faceAttributes"]["headPose"]["yaw"],
+                    result[0]["faceAttributes"]["headPose"]["pitch"],
+                    result[0]["faceAttributes"]["headPose"]["roll"],
+                    result[0]["faceLandmarks"]["noseTip"]["y"],
+                    result[0]["faceLandmarks"]["noseTip"]["x"],
+                )
+                return posture
+            except KeyError as e:
+                print('Error:')
+                print(e)
+                print ('Response:')
+                print (json.dumps(result, sort_keys=True, indent=2))
     except Exception as e:
         print('Error:')
         print(e)
+    return None

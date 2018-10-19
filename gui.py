@@ -11,7 +11,7 @@ from PIL import Image, ImageTk
 #### Image processing
 from webcam_pygame import get_image
 #from test_images import get_image
-from api_call import make_api_call
+from api_call import get_posture
 from analyse_posture import PostureAnalyser
 
 
@@ -43,8 +43,9 @@ class Application(tk.Frame):
     def updateImage(self):
         image_path = get_image()
         print(image_path)
-        results = make_api_call(image_path)
+        posture = get_posture(image_path)
 
+        # load sounds
         try:
             pygame.init()
             pygame.mixer.init()
@@ -52,28 +53,26 @@ class Application(tk.Frame):
         except pygame.error:
             sounda = None
 
-
-
-        posture = self.posture.analyse_posture(results) 
-        if  posture == 'resources/neutral.png':
+        # process image
+        advice = self.posture.analyse_posture(posture) 
+        if  advice is None:
             self.can.config(bg="grey")
-
         else:
             self.can.config(bg="red")
             if sounda is not None:
                 sounda.stop()
                 sounda.play()
             print('I tried')
-        img = Image.open(posture)
+        img = Image.open(advice)
         self.warning_pic = ImageTk.PhotoImage(img)
         self.warning.config(image=self.warning_pic)
 
-        if results:
-            self.ypr.set('Yaw: {yaw}, Pitch: {pitch}, Roll: {roll}'.format(**results[0]['faceAttributes']["headPose"]))
-            self.xy.set('Nose tip (x,y): ({x}, {y})'.format(**results[0]["faceLandmarks"]["noseTip"]))
+        if posture:
+            self.ypr.set('Yaw: {yaw}, Pitch: {pitch}, Roll: {roll}'.format(**posture))
+            self.xy.set('Lean: {lean}, Height: {height}'.format(**posture))
         else:
             self.ypr.set('Yaw: -, Pitch: -, Roll: -')
-            self.xy.set('Nose tip (x,y): (-, -)')
+            self.xy.set('Lean: -, Height: -'.format(**posture))
 
         img = Image.open(image_path)
         self.drawImage(img)

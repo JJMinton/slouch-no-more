@@ -1,6 +1,7 @@
-#!/bin/python3.6
+from collections import namedtuple
 import json
 
+Posture = namedtuple('Posture', ['yaw', 'pitch', 'roll', 'height', 'lean'])
 
 class PostureAnalyser():
     def __init__(self):
@@ -14,52 +15,37 @@ class PostureAnalyser():
         self.delta_pitch = 3
         self.delta_roll = 8
 
-        self.delta_x = 50
-        self.delta_y = 20
+        self.delta_lean = 50
+        self.delta_height = 20
 
 
-    def configure(self, result):
-        if result:
-            self.yaw = result[0]["faceAttributes"]["headPose"]["yaw"]
-            self.pitch = result[0]["faceAttributes"]["headPose"]["pitch"]
-            self.roll = result[0]["faceAttributes"]["headPose"]["roll"]
+    def configure(self, posture):
+        self.yaw = posture.yaw
+        self.pitch = posture.pitch
+        self.roll = posture.roll
 
-            self.x = result[0]["faceLandmarks"]["noseTip"]["x"]
-            self.y = result[0]["faceLandmarks"]["noseTip"]["y"]
+        self.height = posture.height
+        self.lean = posture.lean
+        return self
 
-    def analyse_posture(self, result):
-        if result:
-            try:
-                yaw = result[0]["faceAttributes"]["headPose"]["yaw"]
-                pitch = result[0]["faceAttributes"]["headPose"]["pitch"]
-                roll = result[0]["faceAttributes"]["headPose"]["roll"]
-
-                x = result[0]["faceLandmarks"]["noseTip"]["x"]
-                y = result[0]["faceLandmarks"]["noseTip"]["y"]
-            except KeyError:
-                print(result)
-                raise
-
-            if self.x is None:
-                self.configure(result)
-            else:
-                #horizontal movement is fine
-                #if abs(x-self.x) > self.delta_x:
-                #    return False
-                if y > self.y + self.delta_y: #y is from top of frame
-                    return 'resources/down.png'
-                if roll > self.roll + self.delta_roll:
-                    return 'resources/tilt_left.png'
-                if roll < self.roll - self.delta_roll:
-                    return 'resources/tilt_right.png'
-                if yaw > self.yaw + self.delta_yaw:
-                    return 'resources/twist_left.png'
-                if yaw < self.yaw - self.delta_yaw:
-                    return 'resources/twist_right.png'
-                if (pitch-self.pitch) > self.delta_pitch: #Pitch is always zero
-                    return False
-
+    def analyse_posture(self, posture):
+        if self.height is None:
+            self.configure(posture)
         else:
-            print ('Response:')
-            print (json.dumps(result, sort_keys=True, indent=2))
-        return 'resources/neutral.png'
+            # ignore lean
+            # if abs(posture.lean-self.lean) > self.delta_lean:
+            #     return False
+            if posture.height > self.height + self.delta_height: #y is from top of frame
+                return 'resources/down.png'
+            if posture.roll > self.roll + self.delta_roll:
+                return 'resources/tilt_left.png'
+            if posture.roll < self.roll - self.delta_roll:
+                return 'resources/tilt_right.png'
+            if posture.yaw > self.yaw + self.delta_yaw:
+                return 'resources/twist_left.png'
+            if posture.yaw < self.yaw - self.delta_yaw:
+                return 'resources/twist_right.png'
+            # ignore pitch as it is always zero 
+            # if (posture.pitch-self.pitch) > self.delta_pitch:
+            #     return False
+        return None
