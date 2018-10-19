@@ -11,7 +11,7 @@ from PIL import Image, ImageTk
 #### Image processing
 from webcam_pygame import get_image
 #from test_images import get_image
-from api_call import get_posture
+from posture_dummy import get_posture
 from analyse_posture import PostureAnalyser
 
 
@@ -20,6 +20,16 @@ class Application(tk.Frame):
         tk.Frame.__init__(self, master)
         self.posture = PostureAnalyser()
         self.width, self.height = width, height
+
+        # load sounds
+        self.sounda = None
+        try:
+            pygame.init()
+            pygame.mixer.init()
+            self.sounda = pygame.mixer.Sound('resources/sound.wav')
+        except pygame.error:
+            pass
+
         self.grid()
         self.createWidgets()
         self.updateImage()
@@ -42,37 +52,29 @@ class Application(tk.Frame):
 
     def updateImage(self):
         image_path = get_image()
-        print(image_path)
         posture = get_posture(image_path)
 
-        # load sounds
-        try:
-            pygame.init()
-            pygame.mixer.init()
-            sounda = pygame.mixer.Sound('resources/sound.wav')
-        except pygame.error:
-            sounda = None
-
         # process image
-        advice = self.posture.analyse_posture(posture) 
-        if  advice is None:
-            self.can.config(bg="grey")
+        if posture:
+            advice = self.posture.analyse_posture(posture) 
         else:
-            self.can.config(bg="red")
-            if sounda is not None:
-                sounda.stop()
-                sounda.play()
-            print('I tried')
+            advice = 'resources/neutral.png'
+
+        self.can.config(bg="red")
+        if self.sounda:
+            # self.sounda.stop()
+            self.sounda.play()
+
         img = Image.open(advice)
         self.warning_pic = ImageTk.PhotoImage(img)
         self.warning.config(image=self.warning_pic)
 
         if posture:
-            self.ypr.set('Yaw: {yaw}, Pitch: {pitch}, Roll: {roll}'.format(**posture))
-            self.xy.set('Lean: {lean}, Height: {height}'.format(**posture))
+            self.ypr.set('Yaw: {yaw}, Pitch: {pitch}, Roll: {roll}'.format(**posture._asdict()))
+            self.xy.set('Lean: {lean}, Height: {height}'.format(**posture._asdict()))
         else:
             self.ypr.set('Yaw: -, Pitch: -, Roll: -')
-            self.xy.set('Lean: -, Height: -'.format(**posture))
+            self.xy.set('Lean: -, Height: -')
 
         img = Image.open(image_path)
         self.drawImage(img)

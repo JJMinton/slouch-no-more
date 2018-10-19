@@ -8,8 +8,8 @@ class PostureAnalyser():
         self.yaw = None
         self.pitch = None
         self.roll = None
-        self.x = None
-        self.y = None
+        self.height = None
+        self.lean = None
 
         self.delta_yaw = 13
         self.delta_pitch = 3
@@ -48,4 +48,4 @@ class PostureAnalyser():
             # ignore pitch as it is always zero 
             # if (posture.pitch-self.pitch) > self.delta_pitch:
             #     return False
-        return None
+        return 'resources/neutral.png'
