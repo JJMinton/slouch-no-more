@@ -11,7 +11,7 @@ from PIL import Image, ImageTk
 #### Image processing
 from image_pygame import get_image
 #from test_images import get_image
-from posture_dummy import get_posture
+from posture_opencv import get_posture
 from analyse_posture import PostureAnalyser
 
 
